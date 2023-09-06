@@ -14,7 +14,7 @@ export function HeartLetters() {
   const group = groups.get(groupId)
   const userLetters = [...group.letters]
   const userBonusLetters = [...group.bonusLetters]
-  const alphabet = "abcdefghijklmnopqrstuvwxyz"
+  const alphabet = "abcdefghijklmnopqrstuvwxyzæøå"
 
   if (!running) {
     return null

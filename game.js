@@ -15,7 +15,7 @@ const getRandomElement = (arr) => arr[Math.floor(Math.random() * arr.length)]
 const getRandomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
 
-const ALPHABET = "abcdefghijklmnopqrstuvwxyz"
+const ALPHABET = "abcdefghijklmnopqrstuvwxyzæøå"
 const LETTER_BONUS = 10
 
 const rooms = new Map()

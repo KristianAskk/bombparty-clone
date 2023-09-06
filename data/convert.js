@@ -6,6 +6,11 @@ function convertFile(file) {
     .replace(/\r\n/g, "\n")
     .split("\n")
 
+  // strip whitespaces in each word
+  array.forEach((word, i) => {
+    array[i] = word.replace(/\s/g, "")
+  })
+
   const obj = array.reduce((acc, cur, i) => {
     if (cur.length >= 3) {
       acc[cur.toLowerCase()] = 1
@@ -17,10 +22,10 @@ function convertFile(file) {
 }
 
 convertFile("enable2k")
-// convertFile("popular")
+convertFile("popular")
 
 const p = JSON.parse(readFileSync("./wordlist.json"))
 const s = JSON.parse(readFileSync("./enable2k.json"))
 
 const g = { ...p, ...s }
-writeFileSync(`wordlist2.json`, JSON.stringify(g, null, 2))
+writeFileSync(`wordlist.json`, JSON.stringify(g, null, 2))
