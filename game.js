@@ -16,7 +16,7 @@ const getRandomInt = (min, max) =>
   Math.floor(Math.random() * (max - min + 1)) + min
 
 const ALPHABET = "abcdefghijklmnopqrstuvwxyzæøå"
-const LETTER_BONUS = 10
+const LETTER_BONUS = 9
 
 const rooms = new Map()
 
@@ -228,29 +228,31 @@ function connection(io, socket) {
   }
 
   function setHeartLetters(groupId, value) {
-    const { groups } = getRoom()
-    const group = groups.get(groupId)
-
-    const letters = new Set([...group.letters, ...value.split("")])
-    const bonusletter = getBonusLetters(value, letters)
-    const newLetters = new Set([...letters, ...bonusletter])
-
-    if (newLetters.size >= 26) {
+    const { groups } = getRoom();
+    const group = groups.get(groupId);
+  
+    const letters = new Set([...group.letters, ...value.split("")]);
+    const bonusletter = getBonusLetters(value, letters);
+    const newLetters = new Set([...letters, ...bonusletter]);
+  
+    // Check if the word length is greater than 9
+    if (value.length > 9) {
       groups.set(groupId, {
         ...group,
-        lives: Number(group.lives) >= 10 ? 10 : Number(group.lives) + 1,
+        lives: Number(group.lives) >= 4 ? 4 : Number(group.lives) + 1,
         letters: new Set(),
         bonusLetters: new Set(),
-      })
-      io.sockets.in(_roomId).emit("gainedHeart", groupId)
+      });
+      io.sockets.in(_roomId).emit("gainedHeart", groupId);
     } else {
       groups.set(groupId, {
         ...group,
         letters: newLetters,
         bonusLetters: new Set([...group.bonusLetters, ...bonusletter]),
-      })
+      });
     }
   }
+  
 
   function getBonusLetters(value, letters) {
     if (value.length > LETTER_BONUS) {
@@ -266,18 +268,21 @@ function connection(io, socket) {
   }
 
   function checkWord(value, groupId) {
+    // HERE
     const { letterBlend, words, currentGroup, timerConstructor } = getRoom()
     const isBlend = value.includes(letterBlend.toLowerCase())
     const isDictionary = !!dictionary[value]
     const isUnique = !words.has(value)
-    const isLongEnough = value.length >= 3
+    //const isLongEnough = value.length >= 3
+    const isLongEnough = true
     const isCurrentGroup = currentGroup === groupId
+    const isBonusWord = value.length > LETTER_BONUS
 
     if (isBlend && isDictionary && isUnique && isLongEnough && isCurrentGroup) {
       log.green(`valid word: ${value}`)
       io.sockets
         .in(_roomId)
-        .emit("wordValidation", true, { value, letterBlend, currentGroup })
+        .emit("wordValidation", true, { value, letterBlend, currentGroup, isBonusWord })
       words.add(value)
       setGroupText(groupId, value)
       setHeartLetters(groupId, value)
@@ -633,7 +638,7 @@ function connection(io, socket) {
   function setSettings(data, userId) {
     const { settings } = getRoom()
 
-    const timer = data?.timer || settings.get("timer") || 10
+   const timer = data?.timer || settings.get("timer") || 9
     const lives = data?.lives || settings.get("lives") || 2
     const hardMode = data?.hardMode || settings.get("hardMode") || 5
     const hardModeEnabled =

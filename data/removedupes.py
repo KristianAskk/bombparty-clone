@@ -1,8 +1,5 @@
 
 
-# remove dupes from enable2k.txt#
-# and write in it 
-
 with open("./enable2k.txt", "rt") as f:
     data = f.read().splitlines()
 

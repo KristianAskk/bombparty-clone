@@ -1,1 +1,1 @@
-export const LETTER_BONUS = 10
+export const LETTER_BONUS = 9
