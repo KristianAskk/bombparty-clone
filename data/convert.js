@@ -12,7 +12,7 @@ function convertFile(file) {
   })
 
   const obj = array.reduce((acc, cur, i) => {
-    if (cur.length >= 3) {
+    if (true) {
       acc[cur.toLowerCase()] = 1
     }
     return acc
